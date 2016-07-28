@@ -22,10 +22,15 @@ class tushareKLine:
         
         else :
             df = ts.get_h_data(code, start, end, autype='hfq')
+            
+        if df is None:
+            return
         
         ktype = 'D'
-        tableName = 'k_' + ktype + "_" + code 
+        tableName = 'k_' + ktype + "_" + code
+        
         df.to_sql(tableName, self.engine, if_exists='append')
+ 
 
     def getAllHistKData(self):
         ktype = 'D'
@@ -34,6 +39,7 @@ class tushareKLine:
         for index in codeTmp:
             tableName = index
             print '\n\nstart do ' + tableName + '\n'
+            
             self.getHistKData(str(index), '1990-01-01', '1993-01-01')
             self.getHistKData(str(index), '1993-01-01', '1996-01-01')
             self.getHistKData(str(index), '1996-01-01', '1999-01-01')

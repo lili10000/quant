@@ -51,7 +51,7 @@ class sqlMgr:
 
         codeList = []
 
-        SQL = u"select 代码 from basics where ( 代码 > '000000' ) "
+        SQL = u"select 代码 from basics where ( 代码 > '000009' ) "
         #SQL = u"select 代码 from basics"
         SQL.encode('utf-8')
 
