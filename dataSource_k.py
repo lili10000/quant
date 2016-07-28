@@ -9,7 +9,7 @@ import os
 import urllib
 import time
 
-class tushareKLine:
+class yahooApi:
     __columnList = ['c1','c2','c3','c4', \
                     'c5','c6','c7','c8', \
                     'c9','c10','c11','c12', \
@@ -21,7 +21,7 @@ class tushareKLine:
 
 
     def __init__(self):    
-        self.sql = sqlMgr('localhost', 'root', '123456', 'stockdb')
+        self.sql = sqlMgr('localhost', 'root', '861217', 'stockdb')
 
     def getHistKData(self, code, start, end, ktype):
         '''
@@ -74,6 +74,7 @@ class tushareKLine:
                 df.to_csv(self.__filename)
                 self.__write2DB(ktype, codeName)
     '''
+    
     def getAllHistKData_yahoo(self):
 
         ktype = 'D'
@@ -86,10 +87,27 @@ class tushareKLine:
             codeList.append(str(tableName))
 
         for codeName in codeList :
-  
+            while self.__getDataFromNetAll(codeName) != 0 :
+                print '__getDataFromNet try again'
+                time.sleep(3)
+            self.__write2DB_yahoo(ktype, codeName)
+            
+    
+    def getHistKData_yahoo(self):
+
+        ktype = 'D'
+        
+        codeList = []
+
+        codeTmp = self.sql.queryAllCode()
+        for index in codeTmp:
+            tableName = index
+            codeList.append(str(tableName))
+
+        for codeName in codeList :
 
             startYear = '2016'
-            startMon = '02'
+            startMon = '06'
             startDay = '01'
 
             while self.__getDataFromNet(startYear, startMon, startDay, codeName) != 0 :
@@ -113,7 +131,22 @@ class tushareKLine:
             # Rollback in case there is any error
             print 'get csv error'
             return 1;
-
+        
+    def __getDataFromNetAll(self, codeName):
+        url = 'http://table.finance.yahoo.com/table.csv?s='
+        if codeName >= '600000' :
+            url += codeName + '.ss'             
+        else :
+            url += codeName + '.sz'
+        try:
+            url += '&ignore=.csv'
+            print 'start get data, code = ' + codeName
+            urllib.urlretrieve(url, self.__filename)
+            return 0;
+        except:
+            # Rollback in case there is any error
+            print 'get csv error'
+            return 1;
     
                 
 

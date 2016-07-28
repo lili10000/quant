@@ -1,6 +1,9 @@
 # -*- coding:utf-8 -*-
 
-from dataSource import tushareDS
+from tushareApi import tushareKLine
+import tushare as ts
 
-sql = tushareDS()
-sql.test()
+
+
+sql = tushareKLine()
+sql.getAllHistKData()
