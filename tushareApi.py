@@ -11,35 +11,21 @@ class tushareKLine:
         self.engine = create_engine('mysql://root:861217@127.0.0.1/stockdb?charset=utf8')#存入数据库
         self.sql = sqlMgr('localhost', 'root', '861217', 'stockdb')
         
-    def getHistKData(self, code, start, end, ktype):
+    def getHistKData(self, code, start, end):
         '''
         历史K线
         '''
-        print 'getHistKData work'
+        #print 'getHistKData work'
 
         if len(start) == 0 or len(end) == 0 :   
             df = ts.get_h_data(code, autype='hfq')
-            ktype = 'D'
-
-        elif len(start) == 0 :
-            df = ts.get_hist_data(code, start, end)
-            
-        elif cmp(ktype, 'D') == 0 or \
-             cmp(ktype, 'W') == 0 or \
-             cmp(ktype, 'M') == 0 or \
-             cmp(ktype, '5') == 0 or \
-             cmp(ktype, '15') == 0 or \
-             cmp(ktype, '30') == 0 or \
-             cmp(ktype, '60') == 0 :
-
-            df = ts.get_hist_data(code, start, end, ktype)
-            
-        else:
-            print 'input error'
-            return
-
+        
+        else :
+            df = ts.get_h_data(code, start, end, autype='hfq')
+        
+        ktype = 'D'
         tableName = 'k_' + ktype + "_" + code 
-        df.to_sql(tableName, self.engine)
+        df.to_sql(tableName, self.engine, if_exists='append')
 
     def getAllHistKData(self):
         ktype = 'D'
@@ -47,7 +33,15 @@ class tushareKLine:
         codeTmp = self.sql.queryAllCode()
         for index in codeTmp:
             tableName = index
-            self.getHistKData(str(index), '', '', 'D')
-
+            print '\n\nstart do ' + tableName + '\n'
+            self.getHistKData(str(index), '1990-01-01', '1993-01-01')
+            self.getHistKData(str(index), '1993-01-01', '1996-01-01')
+            self.getHistKData(str(index), '1996-01-01', '1999-01-01')
+            self.getHistKData(str(index), '1999-01-01', '2002-01-01')
+            self.getHistKData(str(index), '2002-01-01', '2005-01-01')
+            self.getHistKData(str(index), '2005-01-01', '2008-01-01')
+            self.getHistKData(str(index), '2008-01-01', '2011-01-01')
+            self.getHistKData(str(index), '2011-01-01', '2014-01-01')
+            self.getHistKData(str(index), '2014-01-01', '2017-01-01')
 
 
